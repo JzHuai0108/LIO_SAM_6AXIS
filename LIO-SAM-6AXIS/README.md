@@ -1,5 +1,5 @@
 # LIO-SAM
-
+This repo is forked from [LIO-SAM](https://github.com/TixiaoShan/LIO-SAM) since commit 0cdc9e8b010fff947275d68aa3545062afb059da, "Update readme for noetic".
 **A real-time lidar-inertial odometry package. We strongly recommend the users read this document thoroughly and test the package with the provided dataset first. A video of the demonstration of the method can be found on [YouTube](https://www.youtube.com/watch?v=A0H8CoORZJU).**
 
 <p align='center'>
@@ -55,7 +55,7 @@ We design a system that maintains two graphs and runs up to 10x faster than real
 
 This is the original ROS1 implementation of LIO-SAM. For a ROS2 implementation see branch `ros2`.
 
-- [ROS](http://wiki.ros.org/ROS/Installation) (tested with Kinetic and Melodic)
+- [ROS](http://wiki.ros.org/ROS/Installation) (tested with Kinetic and Melodic. Refer to [#206](https://github.com/TixiaoShan/LIO-SAM/issues/206) for Noetic)
   ```
   sudo apt-get install -y ros-kinetic-navigation
   sudo apt-get install -y ros-kinetic-robot-localization
@@ -79,6 +79,26 @@ cd ..
 catkin_make
 ```
 
+## Using Docker
+Build image (based on ROS1 Kinetic):
+
+```bash
+docker build -t liosam-kinetic-xenial .
+```
+
+Once you have the image, start a container as follows:
+
+```bash
+docker run --init -it -d \
+  -v /etc/localtime:/etc/localtime:ro \
+  -v /etc/timezone:/etc/timezone:ro \
+  -v /tmp/.X11-unix:/tmp/.X11-unix \
+  -e DISPLAY=$DISPLAY \
+  liosam-kinetic-xenial \
+  bash
+```
+
+
 ## Prepare lidar data
 
 The user needs to prepare the point cloud data in the correct format for cloud deskewing, which is mainly done in "imageProjection.cpp". The two requirements are:
@@ -90,8 +110,8 @@ The user needs to prepare the point cloud data in the correct format for cloud d
   - **IMU requirement**. Like the original LOAM implementation, LIO-SAM only works with a 9-axis IMU, which gives roll, pitch, and yaw estimation. The roll and pitch estimation is mainly used to initialize the system at the correct attitude. The yaw estimation initializes the system at the right heading when using GPS data. Theoretically, an initialization procedure like VINS-Mono will enable LIO-SAM to work with a 6-axis IMU. The performance of the system largely depends on the quality of the IMU measurements. The higher the IMU data rate, the better the system accuracy. We use Microstrain 3DM-GX5-25, which outputs data at 500Hz. We recommend using an IMU that gives at least a 200Hz output rate. Note that the internal IMU of Ouster lidar is an 6-axis IMU.
 
   - **IMU alignment**. LIO-SAM transforms IMU raw data from the IMU frame to the Lidar frame, which follows the ROS REP-105 convention (x - forward, y - left, z - upward). To make the system function properly, the correct extrinsic transformation needs to be provided in "params.yaml" file. **The reason why there are two extrinsics is that my IMU (Microstrain 3DM-GX5-25) acceleration and attitude have different cooridinates. Depend on your IMU manufacturer, the two extrinsics for your IMU may or may not be the same**. Using our setup as an example:
-    - we need to set the readings of x-z acceleration and gyro negative to transform the IMU data in the lidar frame, which is indicated by "extrinsicRot" in "params.yaml." 
-    - The transformation of attitude readings is slightly different. We rotate the attitude measurements by -90 degrees around "lidar-z" axis and get the corresponding roll, pitch, and yaw readings in the lidar frame. This transformation is indicated by "extrinsicRPY" in "params.yaml."
+    - we need to set the readings of x-z acceleration and gyro negative to transform the IMU data in the lidar frame, which is indicated by "extrinsicRot" in "params.yaml."
+    - The transformation of attitude readings might be slightly different. IMU's attitude measurement `q_wb` usually means the rotation of points in the IMU coordinate system to the world coordinate system (e.g. ENU). However, the algorithm requires `q_wl`, the rotation from lidar to world. So we need a rotation from lidar to IMU `q_bl`, where `q_wl = q_wb * q_bl`. For convenience, the user only needs to provide `q_lb` as "extrinsicRPY" in "params.yaml" (same as the "extrinsicRot" if acceleration and attitude have the same coordinate).
 
   - **IMU debug**. It's strongly recommended that the user uncomment the debug lines in "imuHandler()" of "imageProjection.cpp" and test the output of the transformed IMU data. The user can rotate the sensor suite to check whether the readings correspond to the sensor's movement. A YouTube video that shows the corrected IMU data can be found [here (link to YouTube)](https://youtu.be/BOUK8LYQhHs).
 
