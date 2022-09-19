@@ -26,10 +26,6 @@
     <node pkg="rviz" type="rviz" name="$(arg project)_rviz"
           args="-d $(find lio_sam_6axis)/launch/include/config/vlp.rviz"/>
 
-    <node pkg="rosbag" type="play" name="bag_play" args="$(arg bag_path) --clock -d 5" required="true"/>
-    
-    <node pkg="rosservice" type="rosservice" name="save_map" args="call /lio_sam_6axis/save_map" >
-      <param name="/use_sim_time" value="false" />
-    </node>
+    <node pkg="rosbag" type="play" name="bag_play" args="$(arg bag_path) --clock -d 5"/>
 
 </launch>

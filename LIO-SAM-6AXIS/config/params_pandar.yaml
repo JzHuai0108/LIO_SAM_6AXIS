@@ -23,39 +23,36 @@ lio_sam_6axis:
   # Export settings
   savePCD: true                              # https://github.com/TixiaoShan/LIO-SAM/issues/3
   
-  scene_name: "exp04"
+  scene_name: "exp04" # not used
 
   #   Sensor Settings
   sensor: hesai                            # lidar sensor type, 'velodyne' or 'ouster' or 'livox'
   N_SCAN: 32                                  # number of lidar channel (i.e., Velodyne/Ouster: 16, 32, 64, 128, Livox Horizon: 6)
   Horizon_SCAN: 2000                          # lidar horizontal resolution (Velodyne:1800, Ouster:512,1024,2048, Livox Horizon: 4000)
   downsampleRate: 1                           # default: 1. Downsample your data if too many points. i.e., 16 = 64 / 4, 16 = 16 / 1
-  lidarMinRange: 0.5                       # default: 1.0, minimum lidar range to be used
-  lidarMaxRange: 60.0                       # default: 1000.0, maximum lidar range to be used
+  lidarMinRange: 0.8                       # default: 1.0, minimum lidar range to be used
+  lidarMaxRange: 120.0                       # default: 1000.0, maximum lidar range to be used
 
   # IMU Settings
   imuFrequence: 400
-  imuAccNoise: 0.1
-  imuGyrNoise: 0.1
-  imuAccBiasN: 0.06080652138668933
-  #  sometimes we can get the 3 axis calibration result of acc or gyro
-  #  imuAccBias_N: [ 0.06080652138668933, 0.08353074835853214, 0.057072968234636895 ]
-  imuAccBias_N: [ 0.001,  0.001,  0.001 ]
-  imuGyrBiasN: -0.0015351229643790084
-  imuGyrBias_N: [ 0.001,  0.001,  0.001 ]
-  #  imuGyrBias_N: [ -0.0015351229643790084, -0.0013449146576507546, 0.00030127855524786183 ]
-  imuGravity: 9.804989173462031
-  imuGravity_N: [ 0.01165152782783894, 9.804989173462031, -0.008749296634685332 ]
+  imuAccNoise: 5.0e-3
+  imuGyrNoise: 1.0e-3
+  imuAccBiasN: 0.003
+  imuAccBias_N: [ 0.003,  0.003,  0.003 ]
+  imuGyrBiasN: 5.5e-5
+  imuGyrBias_N: [ 5.5e-5,  5.5e-5,  5.5e-5 ]
+  imuGravity: 9.80665
+  imuGravity_N: [ -0.01226438, 9.80652551, 0.01816395 ] # not used
   imuRPYWeight: 0.01
 
   #  # Extrinsics (lidar -> IMU)
-  extrinsicTrans: [ -0.001, -0.00855, 0.055 ]
-  extrinsicRot: [ 1, 0, 0,
-                  0, 1, 0,
-                  0, 0, -1 ]
-  extrinsicRPY: [ 1, 0, 0,
-                  0, 1, 0,
-                  0, 0, -1 ]
+  extrinsicTrans: [  -0.00855, -0.001, 0.055 ]
+  extrinsicRot: [ 0.0, -1.0, 0.0,
+                  -1.0, 0.0, 0.0,
+                  0.0, 0.0, -1.0 ]
+  extrinsicRPY: [ 0.0, -1.0, 0.0,
+                  -1.0, 0.0, 0.0,
+                  0.0, 0.0, -1.0 ]
 
   # LOAM feature threshold
   edgeThreshold: 1.0
@@ -73,23 +70,23 @@ lio_sam_6axis:
   rotation_tollerance: 1000                     # radians
 
   # CPU Params
-  numberOfCores: 20                              # number of cores for mapping optimization
+  numberOfCores: 4                              # number of cores for mapping optimization
   mappingProcessInterval: 0.15                  # seconds, regulate mapping frequency
 
   # Surrounding map
-  surroundingkeyframeAddingDistThreshold: 0.2   # meters, regulate keyframe adding threshold
+  surroundingkeyframeAddingDistThreshold: 0.5   # meters, regulate keyframe adding threshold
   surroundingkeyframeAddingAngleThreshold: 0.2  # radians, regulate keyframe adding threshold
-  surroundingKeyframeDensity: 0.5              # meters, downsample surrounding keyframe poses
-  surroundingKeyframeSearchRadius: 5.0         # meters, within n meters scan-to-map optimization (when loop closure disabled)
+  surroundingKeyframeDensity: 1.0              # meters, downsample surrounding keyframe poses
+  surroundingKeyframeSearchRadius: 10.0         # meters, within n meters scan-to-map optimization (when loop closure disabled)
 
   # Loop closure
-  loopClosureEnableFlag: false
+  loopClosureEnableFlag: true
   loopClosureFrequency: 1.0                     # Hz, regulate loop closure constraint add frequency
   surroundingKeyframeSize: 30                   # submap size (when loop closure enabled)
-  historyKeyframeSearchRadius: 30.0             # meters, key frame that is within n meters from current pose will be considerd for loop closure
+  historyKeyframeSearchRadius: 15.0             # meters, key frame that is within n meters from current pose will be considerd for loop closure
   historyKeyframeSearchTimeDiff: 20.0           # seconds, key frame that is n seconds older will be considered for loop closure
   historyKeyframeSearchNum: 20                  # number of hostory key frames will be fused into a submap for loop closure
-  historyKeyframeFitnessScore: 0.9            # icp threshold, the smaller the better alignment
+  historyKeyframeFitnessScore: 0.3            # icp threshold, the smaller the better alignment
 
   # Visualization
   globalMapVisualizationSearchRadius: 1000.0    # meters, global map visualization radius
