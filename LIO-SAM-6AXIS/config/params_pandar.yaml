@@ -42,16 +42,16 @@ lio_sam_6axis:
   imuGyrBiasN: 5.5e-5
   imuGyrBias_N: [ 5.5e-5,  5.5e-5,  5.5e-5 ]
   imuGravity: 9.80665
-  imuGravity_N: [ -0.01226438, 9.80652551, 0.01816395 ] # not used
+  imuGravity_N: [ -0.01226438, -9.80652551, 0.01816395 ] # not used
   imuRPYWeight: 0.01
 
   #  # Extrinsics (lidar -> IMU)
-  extrinsicTrans: [  -0.00855, -0.001, 0.055 ]
-  extrinsicRot: [ 0.0, -1.0, 0.0,
-                  -1.0, 0.0, 0.0,
+  extrinsicTrans: [ 0.001, 0.00855, 0.055 ]
+  extrinsicRot: [ 1.0, 0.0, 0.0,
+                  0.0, 1.0, 0.0,
                   0.0, 0.0, -1.0 ]
-  extrinsicRPY: [ 0.0, -1.0, 0.0,
-                  -1.0, 0.0, 0.0,
+  extrinsicRPY: [ 1.0, 0.0, 0.0,
+                  0.0, 1.0, 0.0,
                   0.0, 0.0, -1.0 ]
 
   # LOAM feature threshold
