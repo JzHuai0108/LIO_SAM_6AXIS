@@ -80,6 +80,10 @@ follow these steps:
 
 ![](README/docker_example.png)
 
+## Troubleshooting
+1. /usr/include/lz4.h:196:57: error: conflicting declaration ‘typedef struct LZ4_stream_t LZ4_stream_t
+   see [instructions here by Eeppii](https://github.com/ethz-asl/lidar_align/issues/16).
+
 ## Single Sequence
 
 - hkust_20201105full_correct2

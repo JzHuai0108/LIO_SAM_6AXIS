@@ -48,6 +48,7 @@ void DataSaver::setDir(string _base_dir, string _sequence_name) {
         _base_dir.append("/");
     }
     save_directory = _base_dir + sequence_name + '/';
+    std::cout << "Removing save directory:" << save_directory << std::endl;
 
     auto unused = system((std::string("exec rm -r ") + save_directory).c_str());
     unused = system((std::string("mkdir -p ") + save_directory).c_str());
