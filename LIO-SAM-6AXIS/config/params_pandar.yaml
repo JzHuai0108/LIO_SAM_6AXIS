@@ -22,7 +22,7 @@ lio_sam_6axis:
 
   # Export settings
   savePCD: true                              # https://github.com/TixiaoShan/LIO-SAM/issues/3
-  savePCDDirectory: "/home/xchu/ramlab_ws/src/LIO-SAM-6AXIS/data/"        # in your home folder, starts and ends with "/". Warning: the code deletes "LOAM" folder then recreates it. See "mapOptimization" for implementation
+  
   scene_name: "exp04"
 
   #   Sensor Settings
