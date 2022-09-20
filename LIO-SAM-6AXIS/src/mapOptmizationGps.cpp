@@ -1,6 +1,8 @@
+#include "terminator.h"
 #include "utility.h"
 #include "lio_sam_6axis/cloud_info.h"
 #include "lio_sam_6axis/save_map.h"
+
 #include <csignal>
 
 #include <std_srvs/Empty.h>
@@ -52,6 +54,9 @@ POINT_CLOUD_REGISTER_POINT_STRUCT (PointXYZIRPYT,
                                            (double, time, time))
 
 typedef PointXYZIRPYT PointTypePose;
+
+Terminator terminator(100);
+volatile bool shutdown;
 
 class mapOptimization : public ParamServer {
 
@@ -238,6 +243,12 @@ public:
 
         pubSLAMInfo = nh.advertise<lio_sam_6axis::cloud_info>("lio_sam_6axis/mapping/slam_info", 1);
 
+        bool terminateAtEnd = false;
+        nh.param<bool>("terminate_at_end", terminateAtEnd, false);
+        if (!terminateAtEnd) {
+            terminator.setWaitPacketsForNextPacket(-1);
+        }
+
         downSizeFilterCorner.setLeafSize(mappingCornerLeafSize, mappingCornerLeafSize, mappingCornerLeafSize);
         downSizeFilterSurf.setLeafSize(mappingSurfLeafSize, mappingSurfLeafSize, mappingSurfLeafSize);
         downSizeFilterICP.setLeafSize(mappingSurfLeafSize, mappingSurfLeafSize, mappingSurfLeafSize);
@@ -312,7 +323,7 @@ public:
         // extract time stamp
         timeLaserInfoStamp = msgIn->header.stamp;
         timeLaserInfoCur = msgIn->header.stamp.toSec();
-
+        terminator.newPacket();
         // extract info and feature cloud
         cloudInfo = *msgIn;
         pcl::fromROSMsg(msgIn->cloud_corner, *laserCloudCornerLast);
@@ -686,6 +697,14 @@ public:
             if (useGPS)
                 visualGPSConstraint();
 
+            shutdown = terminator.quit();
+            if (shutdown) {
+                std_srvs::Empty::Request req;
+                std_srvs::Empty::Response res;
+                saveMapService(req, res);
+                std::cout << "shutdown ros!\n";
+                ros::shutdown();
+            }
             rate.sleep();
         }
     }

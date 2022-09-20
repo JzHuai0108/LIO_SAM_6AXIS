@@ -6,6 +6,9 @@
       See "mapOptimization" for implementation -->
     <arg name="save_dir" default="/home/LIO-SAM-6AXIS/results/"/>
 
+    <arg name="terminate_at_end" default="true" />
+    <param name="terminate_at_end" type="bool" value="$(arg terminate_at_end)"/>
+
     <!-- Parameters -->
     <rosparam file="$(find lio_sam_6axis)/config/params_pandar.yaml" command="load"/>
     <param name="savePCDDirectory" type="string" value="$(arg save_dir)" />

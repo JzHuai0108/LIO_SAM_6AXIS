@@ -4,23 +4,22 @@ bagpath="$1"
 outputpath="$2"
 
 bagnames=(
-# exp10_cupola_2
-# exp15_attic_to_upper_gallery
-# exp16_attic_to_upper_gallery_2
-# exp23_the_sheldonian_slam
-
 exp01_construction_ground_level
 exp02_construction_multilevel
-# exp03_construction_stairs
-# exp04_construction_upper_level
-# exp05_construction_upper_level_2
-# exp06_construction_upper_level_3
-# exp07_long_corridor
-# exp09_cupola
-# exp11_lower_gallery
-# exp21_outside_building
-# exp14_basement_2
-# exp18_corridor_lower_gallery_2
+exp03_construction_stairs
+exp04_construction_upper_level
+exp05_construction_upper_level_2
+exp06_construction_upper_level_3
+exp07_long_corridor
+exp09_cupola
+exp11_lower_gallery
+exp21_outside_building
+exp14_basement_2
+exp18_corridor_lower_gallery_2
+exp10_cupola_2
+exp15_attic_to_upper_gallery
+exp16_attic_to_upper_gallery_2
+exp23_the_sheldonian_slam
 )
 
 lidarslam() {
