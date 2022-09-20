@@ -290,18 +290,17 @@ public:
             pcl::moveFromROSMsg(currentCloudMsg, *tmpPandarCloudIn);
             laserCloudIn->points.resize(tmpPandarCloudIn->size());
             laserCloudIn->is_dense = tmpPandarCloudIn->is_dense;
-            double time_begin = tmpPandarCloudIn->points[0].timestamp;
+            // double time_begin = tmpPandarCloudIn->points[0].timestamp;
+            double time_begin = currentCloudMsg.header.stamp.toSec();
+
             for (size_t i = 0; i < tmpPandarCloudIn->size(); i++) {
                 auto &src = tmpPandarCloudIn->points[i];
                 auto &dst = laserCloudIn->points[i];
-                dst.x = src.y * -1;
-                dst.y = src.x;
-                //        dst.x = src.x;
-                //        dst.y = src.y;
+                dst.x = src.x;
+                dst.y = src.y;
                 dst.z = src.z;
                 dst.intensity = src.intensity;
                 dst.ring = src.ring;
-                //dst.tiSme = src.t * 1e-9f;
                 dst.time = src.timestamp - time_begin; // s
             }
         } else {
@@ -399,6 +398,8 @@ public:
             double currentImuTime = thisImuMsg.header.stamp.toSec();
 
             // get roll, pitch, and yaw estimation for this scan
+            // jhuai: The IMU orientation data will be passed onto the initialization functions which 
+            // are the only places where IMU orientation data will be used.
             if (currentImuTime <= timeScanCur)
                 imuRPY2rosRPY(&thisImuMsg, &cloudInfo.imuRollInit, &cloudInfo.imuPitchInit, &cloudInfo.imuYawInit);
 

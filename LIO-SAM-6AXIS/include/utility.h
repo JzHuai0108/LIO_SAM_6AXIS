@@ -306,6 +306,20 @@ public:
         usleep(100);
     }
 
+    /**
+      return R_world_imu, the rotation of the IMU frame relative to the world frame with z up.
+     */
+    Eigen::Quaterniond initializeOrientationFromAccel(const Eigen::Vector3d & acc_B) {
+        Eigen::Vector3d e_acc = acc_B.normalized();
+        // align with ez_W:
+        Eigen::Vector3d ez_W(0.0, 0.0, 1.0);
+        Eigen::Matrix<double, 3, 1> poseIncrement;
+        poseIncrement = ez_W.cross(e_acc).normalized();
+        double angle = std::acos(ez_W.transpose() * e_acc);
+        Eigen::AngleAxisd aa(-angle, poseIncrement);
+        return Eigen::Quaterniond(aa);
+    }
+
     sensor_msgs::Imu imuConverter(const sensor_msgs::Imu &imu_in) {
         sensor_msgs::Imu imu_out = imu_in;
         // rotate acceleration
@@ -325,7 +339,7 @@ public:
                                   imu_in.orientation.z);
         Eigen::Quaterniond q_final;
         if (imuType == 0) {
-            q_final = extQRPY;
+            q_final = initializeOrientationFromAccel(acc);
         } else if (imuType == 1)
             q_final = q_from * extQRPY;
         else

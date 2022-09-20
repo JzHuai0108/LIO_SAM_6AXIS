@@ -471,7 +471,7 @@ public:
             ROS_INFO("NO ENCOUGH POSE!");
             return false;
         }
-
+        ROS_INFO_STREAM("Saving point cloud map to folder " << saveDirectory);
 
         GpsTools gpsTools;
         // when you shut down the terminal , we will save odom  and map
